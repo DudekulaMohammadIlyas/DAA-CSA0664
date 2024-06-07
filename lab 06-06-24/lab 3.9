@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+typedef struct {
+    int x;
+    int y;
+    double distance;
+} Point;
+double calculateDistance(int x, int y) {
+    return sqrt(x * x + y * y);}
+int comparePoints(const void* a, const void* b) {
+    Point* pointA = (Point*)a;
+    Point* pointB = (Point*)b;
+    if (pointA->distance < pointB->distance) return -1;
+    if (pointA->distance > pointB->distance) return 1;
+    return 0;}
+Point* kClosestPoints(int** points, int pointsSize, int* pointsColSize, int k) {
+    Point* pointArray = (Point*)malloc(pointsSize * sizeof(Point));
+    for (int i = 0; i < pointsSize; i++) {
+        pointArray[i].x = points[i][0];
+        pointArray[i].y = points[i][1];
+        pointArray[i].distance = calculateDistance(points[i][0], points[i][1]);}
+    qsort(pointArray, pointsSize, sizeof(Point), comparePoints);
+    Point* result = (Point*)malloc(k * sizeof(Point));
+    for (int i = 0; i < k; i++) {
+        result[i] = pointArray[i];}
+    free(pointArray);
+    return result;}
+int main() {
+    int pointsSize = 5;
+    int pointsColSize = 2;
+    int k = 3;
+    int* points[] = {
+        (int[]){1, 3},
+        (int[]){-2, 2},
+        (int[]){5, 8},
+        (int[]){0, 1},
+        (int[]){3, 3}};
+    Point* closestPoints = kClosestPoints(points, pointsSize, &pointsColSize, k);
+    printf("The %d closest points to the origin are:\n", k);
+    for (int i = 0; i < k; i++) {
+        printf("[%d, %d]\n", closestPoints[i].x, closestPoints[i].y);}
+    free(closestPoints);
+    return 0;
+}

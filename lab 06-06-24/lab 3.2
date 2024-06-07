@@ -1,0 +1,53 @@
+2.#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Compare function for qsort
+int compare(const void *a, const void *b) {
+    return (*(char *)a - *(char *)b);
+}
+
+// Function to check if one sorted string can break another
+int canBreak(char *sorted1, char *sorted2, int len) {
+    for (int i = 0; i < len; i++) {
+        if (sorted1[i] < sorted2[i]) {
+            return 0; // sorted1 cannot break sorted2
+        }
+    }
+    return 1; // sorted1 can break sorted2
+}
+
+// Main function to check if some permutation of s1 can break some permutation of s2 or vice versa
+int checkIfCanBreak(char *s1, char *s2) {
+    int len = strlen(s1);
+    
+    // Sort both strings
+    char *sorted1 = (char *)malloc((len + 1) * sizeof(char));
+    char *sorted2 = (char *)malloc((len + 1) * sizeof(char));
+    strcpy(sorted1, s1);
+    strcpy(sorted2, s2);
+    qsort(sorted1, len, sizeof(char), compare);
+    qsort(sorted2, len, sizeof(char), compare);
+    
+    // Check both conditions
+    int result = canBreak(sorted1, sorted2, len) || canBreak(sorted2, sorted1, len);
+    
+    // Free allocated memory
+    free(sorted1);
+    free(sorted2);
+    
+    return result;
+}
+
+int main() {
+    char s1[] = "axc";
+    char s2[] = "xya";
+    int result=checkIfCanBreak(s1, s2);
+    if (checkIfCanBreak(s1, s2)) {
+        printf("Some permutation of one string can break some permutation of the other string.\n");
+    } else {
+        printf("No permutation of one string can break any permutation of the other string.\n");
+    }
+    printf("%d",result);
+    return 0;
+}

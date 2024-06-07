@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <limits.h>
+
+// Function to find the maximum sum of a subarray using Kadane's algorithm
+int kadane(int* nums, int n) {
+    int max_current = nums[0];
+    int max_global = nums[0];
+
+    for (int i = 1; i < n; i++) {
+        max_current = (nums[i] > (max_current + nums[i])) ? nums[i] : (max_current + nums[i]);
+        max_global = (max_global > max_current) ? max_global : max_current;
+    }
+
+    return max_global;
+}
+
+// Function to find the maximum circular subarray sum
+int maxSubarraySumCircular(int* nums, int numsSize) {
+    // Step 1: Find the maximum subarray sum using Kadane's algorithm
+    int max_kadane = kadane(nums, numsSize);
+
+    // Step 2: Find the maximum circular subarray sum
+    int total_sum = 0;
+    for (int i = 0; i < numsSize; i++) {
+        total_sum += nums[i];
+        nums[i] = -nums[i];
+    }
+
+    // Step 3: Find the maximum subarray sum of the inverted array using Kadane's algorithm
+    int max_inverted_kadane = kadane(nums, numsSize);
+    int max_circular = total_sum + max_inverted_kadane; // Max circular sum is total_sum - min subarray sum
+
+    // Step 4: Handle the edge case where all elements are negative
+    if (max_circular == 0) {
+        return max_kadane;
+    }
+
+    // Step 5: Return the maximum of the two cases
+    return (max_kadane > max_circular) ? max_kadane : max_circular;
+}
+
+int main() {
+    int nums[] = {5, -3, 5};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    int result = maxSubarraySumCircular(nums, numsSize);
+    printf("The maximum possible sum of a non-empty subarray in the circular array is: %d\n", result);
+
+    return 0;
+}

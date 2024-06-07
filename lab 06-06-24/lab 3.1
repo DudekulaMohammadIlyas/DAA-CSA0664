@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int canPermuteBreaks(char *s1, char *s2) {
+    int countS1[26] = {0};
+    int countS2[26] = {0};
+    int len = strlen(s1);
+    int diff = 0;
+    
+    // Count the frequency of characters in both strings
+    for (int i = 0; i < len; i++) {
+        countS1[s1[i] - 'a']++;
+        countS2[s2[i] - 'a']++;
+    }
+    
+    // Accumulate the difference in counts
+    for (int i = 0; i < 26; i++) {
+        diff += countS1[i] - countS2[i];
+        
+        // If at any point diff becomes negative, s2 can break s1
+        if (diff < 0) return 0;
+    }
+    
+    return 1;
+}
+
+int main() {
+    char s1[] = "abc";
+    char s2[] = "xya";
+    
+    int result = canPermuteBreaks(s1, s2);
+    
+    if (result) {
+        printf("Some permutation of s1 can break some permutation of s2 or vice-versa.\n");
+    } else {
+        printf("No permutation of s1 can break any permutation of s2, and vice-versa.\n");
+    }
+    
+    return 0;
+}

@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#define MOD 1000000007
+
+// Function to find the maximum sum of a subsequence where no two adjacent elements are selected
+long long maxNonAdjacentSum(int* nums, int numsSize) {
+    if (numsSize == 0) return 0;
+    if (numsSize == 1) return nums[0];
+
+    long long prev2 = 0;
+    long long prev1 = nums[0];
+    long long current;
+
+    for (int i = 1; i < numsSize; i++) {
+        current = nums[i] + ((prev2 > prev1) ? prev2 : prev1);
+        prev2 = prev1;
+        prev1 = current;
+    }
+
+    return (prev1 > prev2) ? prev1 : prev2;
+}
+
+long long sumOfQueries(int* nums, int numsSize, int** queries, int queriesSize, int* queriesColSize) {
+    long long totalSum = 0;
+
+    for (int i = 0; i < queriesSize; i++) {
+        int pos = queries[i][0];
+        int val = queries[i][1];
+
+        // Update the array
+        nums[pos] = val;
+
+        // Calculate the maximum sum of a subsequence where no two adjacent elements are selected
+        long long result = maxNonAdjacentSum(nums, numsSize);
+
+        // Add the result to the total sum
+        totalSum = (totalSum + result) % MOD;
+    }
+
+    return totalSum;
+}
+
+int main() {
+    int nums[] = {3, 2, 5, 10, 7};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    int q1[] = {0, 5};
+    int q2[] = {2, 1};
+    int q3[] = {4, 6};
+    int* queries[] = {q1, q2, q3};
+    int queriesSize = sizeof(queries) / sizeof(queries[0]);
+    int queriesColSize[] = {2, 2, 2};
+
+    long long result = sumOfQueries(nums, numsSize, queries, queriesSize, queriesColSize);
+    printf("The sum of the answers to all queries is: %lld\n", result);
+
+    return 0;
+}

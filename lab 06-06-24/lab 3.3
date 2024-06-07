@@ -1,0 +1,26 @@
+3.#include <stdio.h>
+#include <string.h>
+
+#define ALPHABET_SIZE 26
+
+// Function to calculate the cost of the string t
+int calculateCost(char *t) {
+    int length = strlen(t);
+    int cost = 0;
+    int frequency[ALPHABET_SIZE] = {0}; // Frequency array to count characters
+
+    for (int i = 0; i < length; i++) {
+        int index = t[i] - 'a'; // Get the index of the character in the alphabet
+        cost += frequency[index]; // Add the frequency count to the cost
+        frequency[index]++; // Increment the frequency count for the current character
+    }
+
+    return cost;
+}
+
+int main() {
+    char t[] = "aab";
+    int totalCost = calculateCost(t);
+    printf("The total cost of the string '%s' is: %d\n", t, totalCost);
+    return 0;
+}
